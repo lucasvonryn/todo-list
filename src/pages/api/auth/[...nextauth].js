@@ -1,28 +1,54 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export default NextAuth({
     providers: [
         CredentialsProvider({
         name: "Credentials",
         credentials: {
-            email: { label: "Email", type: "text" },
-            password: { label: "Password", type: "password" }
+            email: { label: "Email", type: "email" },
+            password: { label: "Password", type: "password" },
         },
         async authorize(credentials) {
-            if (credentials.email === "user@example.com" && credentials.password === "123456") {
-                return { id: 1, name: "User", email: "user@example.com" };
-            } else {
-                return null;
+            const user = await prisma.user.findUnique({
+            where: {
+                email: credentials.email,
+            },
+            });
+
+            if (user && bcrypt.compareSync(credentials.password, user.password)) {
+                return { id: user.id, name: user.name, email: user.email };
             }
-        }
-        })
+
+            return null;
+        },
+        }),
     ],
     pages: {
         signIn: "/auth/signin",
-        error: "/auth/error"
+        error: "/auth/error",
     },
     session: {
-        strategy: "jwt"
-    }
+        strategy: "jwt",
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+        if (user) {
+            token.id = user.id;
+            token.email = user.email;
+        }
+        return token;
+        },
+        async session({ session, token }) {
+        if (token) {
+            session.id = token.id;
+            session.email = token.email;
+        }
+        return session;
+        },
+    },
 });
