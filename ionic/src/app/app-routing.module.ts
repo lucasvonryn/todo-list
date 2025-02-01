@@ -5,9 +5,9 @@ import { SignupPage } from './pages/signup/signup.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginPage },
-  { path: 'signup', component: SignupPage },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  // { path: 'login', component: LoginPage },
+  // { path: 'signup', component: SignupPage },
   { path: 'dashboard', component: DashboardPage },
 ];
 

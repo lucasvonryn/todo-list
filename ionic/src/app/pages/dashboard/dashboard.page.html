@@ -1,13 +1,16 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>dashboard</ion-title>
+    <ion-title>To-do List</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-button expand="full" (click)="addTask()">Adicionar Tarefa</ion-button>
+
+  <ion-list>
+    <ion-item *ngFor="let task of tasks">
+      <ion-label>{{ task.title }}</ion-label>
+      <ion-button color="danger" (click)="deleteTask(task.id)">Excluir</ion-button>
+    </ion-item>
+  </ion-list>
 </ion-content>
